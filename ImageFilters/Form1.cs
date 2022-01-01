@@ -54,9 +54,29 @@ namespace ImageFilters
         {
             int t = Convert.ToInt32(T_Value.Text);
             int windowSize = Convert.ToInt32(Ws.Text);
-            byte[,] newImageMatrix = AlphaTrimFilter.alphaTrimFilter(ImageMatrix, windowSize, t);
-            pictureBox2.Image = null;
-            pictureBox2.Update();
+            byte[,] newImageMatrix = { };
+            if (Filter_Type.SelectedItem.ToString() == "Alpha-Trim Filter")
+            {
+                if (Sorting_Algo.SelectedItem.ToString() == "Counting sort")
+                {
+                    newImageMatrix = AlphaTrimFilter.alphaTrimFilter(ImageMatrix, windowSize, t, 1);
+                }
+                else
+                {
+                    newImageMatrix = AlphaTrimFilter.alphaTrimFilter(ImageMatrix, windowSize, t, 2);
+                }
+            }
+            /*else
+            {
+                if (Sorting_Algo.SelectedItem.ToString() == "Counting sort")
+                {
+                    newImageMatrix = AdaptiveMedFilter.adaptiveMedFilter(ImageMatrix, windowSize, t, 1);
+                }
+                else
+                {
+                    newImageMatrix = AdaptiveMedFilter.adaptiveMedFilter(ImageMatrix, windowSize, t, 2);
+                }
+            }*/
             ImageOperations.DisplayImage(newImageMatrix, pictureBox2);
         }
 
