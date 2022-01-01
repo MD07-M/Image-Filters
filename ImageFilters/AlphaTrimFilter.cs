@@ -96,7 +96,7 @@ namespace ImageFilters
                 {
                     newPixel += window[i];
                 }
-                newPixel = newPixel / window.Length;
+                newPixel /= window.Length;
             }
             return newPixel;
         }
@@ -140,7 +140,6 @@ namespace ImageFilters
                     {
                         byte[] sortedWindow = kSort(window, t);
                         newPixel = calculateNewPixel(sortedWindow, t, algorithmType);
-                        img[i, j] = (byte)newPixel;
                     }
                     img[i, j] = (byte)newPixel;
                 }
