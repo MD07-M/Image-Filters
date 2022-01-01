@@ -30,24 +30,58 @@ namespace ImageFilters
 
         private void btnZGraph_Click(object sender, EventArgs e)
         {
-            // Make up some data points from the N, N log(N) functions
-            int N = 40;
+            int t = Convert.ToInt32(T_Value.Text);
+            int maxWindowSize = Convert.ToInt32(Max_Graph_Ws.Text);
+            int N = maxWindowSize / 2;
             double[] x_values = new double[N];
-            double[] y_values_N = new double[N];
-            double[] y_values_NLogN = new double[N];
+            double[] y_values_1stAlgo = new double[N];
+            double[] y_values_2ndAlgo = new double[N];
+            double time1, time2;
 
-            for (int i = 0; i < N; i++)
+            if (Filter_Type.SelectedItem.ToString() == "Alpha-Trim Filter")
             {
-                x_values[i] = i;
-                y_values_N[i] = i;
-                y_values_NLogN[i] = i * Math.Log(i);
-            }
+                for (int windowSize = 3, i = 0; windowSize <= maxWindowSize; windowSize += 2, i++)
+                {
+                    x_values[i] = windowSize;
 
-            //Create a graph and add two curves to it
-             ZGraphForm ZGF = new ZGraphForm("Sample Graph", "N", "f(N)");
-            ZGF.add_curve("f(N) = N", x_values, y_values_N,Color.Red);
-            ZGF.add_curve("f(N) = N Log(N)", x_values, y_values_NLogN, Color.Blue);
-            ZGF.Show();
+                    time1 = System.Environment.TickCount;
+                    AlphaTrimFilter.alphaTrimFilter(ImageMatrix, windowSize, t, 1);
+                    time2 = System.Environment.TickCount;
+                    y_values_1stAlgo[i] = (time2 - time1) / 1000;
+
+                    time1 = System.Environment.TickCount;
+                    AlphaTrimFilter.alphaTrimFilter(ImageMatrix, windowSize, t, 2);
+                    time2 = System.Environment.TickCount;
+                    y_values_2ndAlgo[i] = (time2 - time1) / 1000;
+                }
+                //Create a graph and add two curves to it
+                ZGraphForm ZGF = new ZGraphForm("Alpha-Trim Filter", "Window size", "Execution time");
+                ZGF.add_curve("Counting sort", x_values, y_values_1stAlgo, Color.Red);
+                ZGF.add_curve("K-sort", x_values, y_values_2ndAlgo, Color.Blue);
+                ZGF.Show();
+            }
+            /*else
+            {
+                for (int windowSize = 3, i = 0; windowSize <= maxWindowSize; windowSize += 2, i++)
+                {
+                    x_values[i] = windowSize;
+
+                    time1 = System.Environment.TickCount;
+                    AdaptiveMedFilter.adaptiveMedFilter(ImageMatrix, windowSize, t, 1);
+                    time2 = System.Environment.TickCount;
+                    y_values_1stAlgo[i] = (time2 - time1) / 1000;
+
+                    time1 = System.Environment.TickCount;
+                    AdaptiveMedFilter.adaptiveMedFilter(ImageMatrix, windowSize, t, 2);
+                    time2 = System.Environment.TickCount;
+                    y_values_2ndAlgo[i] = (time2 - time1) / 1000;
+                }
+                //Create a graph and add two curves to it
+                ZGraphForm ZGF = new ZGraphForm("Sample Graph", "N", "f(N)");
+                ZGF.add_curve("f(N) = N", x_values, y_values_1stAlgo,Color.Red);
+                ZGF.add_curve("f(N) = N Log(N)", x_values, y_values_2ndAlgo, Color.Blue);
+                ZGF.Show();
+            }*/
         }
 
         private void submit_btn_Click(object sender, EventArgs e)
