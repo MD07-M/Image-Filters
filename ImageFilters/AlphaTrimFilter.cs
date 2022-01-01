@@ -31,7 +31,42 @@ namespace ImageFilters
             }
         }
 
-        static void windowSort(byte[,] img, byte[] window, int i, int j, int windowSize)
+        static byte[] kSort(byte[] arr, int k)
+        {
+            int newArrSize = (arr.Length) - (k * 2);
+            byte[] newArr = new byte[newArrSize];
+            bool[] visited = new bool[arr.Length];
+            for (int i = 0; i < k; i++)
+            {
+                int min = (int)1e9, minindex = 0, max = (int)-1e9, maxindex = 0;
+                for (int j = 0; j < arr.Length; j++)
+                {
+                    if (!visited[j] && arr[j] < min)
+                    {
+                        min = arr[j];
+                        minindex = j;
+                    }
+                    else if (!visited[j] && arr[j] > max)
+                    {
+                        max = arr[j];
+                        maxindex = j;
+                    }
+
+                }
+                visited[minindex] = true;
+                visited[maxindex] = true;
+            }
+            for (int i = 0, j = 0; i < arr.Length; i++)
+            {
+                if (!visited[i])
+                {
+                    newArr[j++] = arr[i];
+                }
+            }
+            return newArr;
+        }
+
+        static byte[] getWindow(byte[,] img, byte[] window, int i, int j, int windowSize)
         {
             for (int a = i, k = 0; a <= (i + windowSize - 1); a++)
             {
@@ -41,17 +76,28 @@ namespace ImageFilters
                     k++;
                 }
             }
-            countingSort(window);
+            return window;
         }
 
-        static int calculateNewPixel(byte[] window, int windowSize, int t)
+        static int calculateNewPixel(byte[] window, int t, int algorithmType)
         {
             int newPixel = 0;
-            for (int i = t; i < (windowSize * windowSize) - t; i++)
+            if (algorithmType == 1)
             {
-                newPixel += window[i];
+                for (int i = t; i < (window.Length) - t; i++)
+                {
+                    newPixel += window[i];
+                }
+                newPixel /= (window.Length) - (t * 2);
             }
-            newPixel /= (windowSize * windowSize) - (t * 2);
+            else
+            {
+                for (int i = 0; i < window.Length; i++)
+                {
+                    newPixel += window[i];
+                }
+                newPixel = newPixel / window.Length;
+            }
             return newPixel;
         }
 
@@ -74,7 +120,7 @@ namespace ImageFilters
             return arrayZeroPad;
         }
 
-        public static byte[,] alphaTrimFilter(byte[,] img, int windowSize, int t)
+        public static byte[,] alphaTrimFilter(byte[,] img, int windowSize, int t, int algorithmType)
         {
             byte[] window = new byte[windowSize * windowSize];
             byte[,] imgPad = padding(img, windowSize);
@@ -83,8 +129,19 @@ namespace ImageFilters
             {
                 for (int j = 0; (j + windowSize - 1) < imgLength; j++)
                 {
-                    windowSort(imgPad, window, i, j, windowSize);
-                    int newPixel = calculateNewPixel(window, windowSize, t);
+                    window = getWindow(imgPad, window, i, j, windowSize);
+                    int newPixel;
+                    if (algorithmType == 1)
+                    {
+                        countingSort(window);
+                        newPixel = calculateNewPixel(window, t, algorithmType);
+                    }
+                    else
+                    {
+                        byte[] sortedWindow = kSort(window, t);
+                        newPixel = calculateNewPixel(sortedWindow, t, algorithmType);
+                        img[i, j] = (byte)newPixel;
+                    }
                     img[i, j] = (byte)newPixel;
                 }
             }
