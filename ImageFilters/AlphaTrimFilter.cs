@@ -46,14 +46,17 @@ namespace ImageFilters
                         min = arr[j];
                         minindex = j;
                     }
-                    else if (!visited[j] && arr[j] > max)
+                }
+                visited[minindex] = true;
+
+                for (int j = 0; j < arr.Length; j++)
+                {
+                    if (!visited[j] && arr[j] > max)
                     {
                         max = arr[j];
                         maxindex = j;
                     }
-
                 }
-                visited[minindex] = true;
                 visited[maxindex] = true;
             }
             for (int i = 0, j = 0; i < arr.Length; i++)
