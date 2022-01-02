@@ -142,7 +142,6 @@ namespace ImageFilters
                 T_Value.Visible = false;
             }
 
-
         }
 
     }
