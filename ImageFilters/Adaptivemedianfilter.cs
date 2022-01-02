@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +8,10 @@ namespace ImageFilters
 {
     class AdaptiveMedianFilter
     {
-        static double R1, R2;
         static int Zxy;
 
         static void CountingSort(byte[] arr)
         {
-
             int mx = arr.Max();
             byte[] countArr = new byte[++mx];
             for (int i = 0; i < mx; i++)
@@ -79,7 +77,7 @@ namespace ImageFilters
 
         static int NewPixel(byte[] window, int ws, bool sort)
         {
-            R1 = Environment.TickCount & Int32.MaxValue;
+   
             int Zmedian;
             int Zmin;
             int Zmax;
@@ -133,16 +131,10 @@ namespace ImageFilters
                     newpixelval = Zmedian;
 
             }
-            
-            R2= Environment.TickCount & Int32.MaxValue;
+       
             return newpixelval;
         }
 
-       public static double GetRunTime()
-        {
-            double result = (R2 - R1)/1000;
-            return result;
-        }
 
         static byte[,] Padding(byte[,] img, int windowSize)
         {
