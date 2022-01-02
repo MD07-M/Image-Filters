@@ -240,7 +240,7 @@ namespace ImageFilters
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.btnZGraph);
             this.Controls.Add(this.btnOpen);
-            this.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.ForeColor = System.Drawing.SystemColors.Highlight;
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "Form1";
             this.Text = "Image Filters...";
@@ -272,4 +272,3 @@ namespace ImageFilters
         private System.Windows.Forms.Button btnOpen;
     }
 }
-
