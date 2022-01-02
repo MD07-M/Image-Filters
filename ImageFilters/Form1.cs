@@ -24,14 +24,13 @@ namespace ImageFilters
                 string OpenedFilePath = openFileDialog1.FileName;
                 ImageMatrix = ImageOperations.OpenImage(OpenedFilePath);
                 ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
-
             }
         }
 
         private void btnZGraph_Click(object sender, EventArgs e)
         {
-            int t = 1;
-            try{ t = Convert.ToInt32(T_Value.Text); } catch(Exception exx) {  }
+            int t = Convert.ToInt32(T_Value.Text);
+            int windowSize = Convert.ToInt32(Ws.Text);
             int maxWindowSize = Convert.ToInt32(Max_Graph_Ws.Text);
             int N = maxWindowSize / 2;
             double[] x_values = new double[N];
@@ -41,7 +40,7 @@ namespace ImageFilters
 
             if (Filter_Type.SelectedIndex == 0)
             {
-                for (int windowSize = 3, i = 0; windowSize <= maxWindowSize; windowSize += 2, i++)
+                for (int i = 0; windowSize <= maxWindowSize; windowSize += 2, i++)
                 {
                     x_values[i] = windowSize;
 
@@ -64,7 +63,7 @@ namespace ImageFilters
             else if(Filter_Type.SelectedIndex == 1)
             {
        
-                for (int windowSize = 3, i = 0; windowSize <= maxWindowSize; windowSize += 2, i++)
+                for (int i = 0; windowSize <= maxWindowSize; windowSize += 2, i++)
                 {
                     x_values[i] = windowSize;
                     
@@ -112,7 +111,6 @@ namespace ImageFilters
             }
 
             ImageOperations.DisplayImage(newImageMatrix, pictureBox2);
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -125,8 +123,6 @@ namespace ImageFilters
         {
             Sorting_Algo.Items.Clear();
             Sorting_Algo.ResetText();
-
-
             Sorting_Algo.Items.Add("Counting sort");
 
             if (Filter_Type.SelectedIndex == 0)
@@ -137,12 +133,10 @@ namespace ImageFilters
             }
             else
             {
-                Sorting_Algo.Items.Add("Quick sort");
                 label4.Visible = false;
                 T_Value.Visible = false;
+                Sorting_Algo.Items.Add("Quick sort");
             }
-
         }
-
     }
 }

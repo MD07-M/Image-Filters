@@ -71,6 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adaptivemedianfilter.cs" />
     <Compile Include="AlphaTrimFilter.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

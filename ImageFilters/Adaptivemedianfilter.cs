@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImageFilters
 {
@@ -32,10 +28,10 @@ namespace ImageFilters
                 }
             }
         }
+
         public static int Partition(byte[] Array, int left, int right)
         {
-            byte last = Array[right];
-            byte Temp;
+            byte last = Array[right], Temp;
             int index = left;
             for (int i = left; i < right; i++)
             {
@@ -51,6 +47,7 @@ namespace ImageFilters
             Array[right] = Temp;
             return index;
         }
+
         public static byte[] QUICK_SORT(byte[] Array, int left, int right)
         {
             if (left < right)
@@ -61,9 +58,8 @@ namespace ImageFilters
             }
             return Array;
         }
-       
 
-        static void OneDWindow(byte[,] img, byte[] window, int i, int j, int windowSize)
+        static void getWindow(byte[,] img, byte[] window, int i, int j, int windowSize)
         {
             for (int a = i, k = 0; a <= (i + windowSize - 1); a++)
             {
@@ -77,13 +73,7 @@ namespace ImageFilters
 
         static int NewPixel(byte[] window, int ws, bool sort)
         {
-   
-            int Zmedian;
-            int Zmin;
-            int Zmax;
-            int newpixelval = 0;
-            int windowSize = ws;
-            int newwindowsize=windowSize;
+            int Zmedian, Zmin, Zmax, newpixelval = 0, windowSize = ws, newwindowsize = windowSize;
             
             if (newwindowsize > windowSize)
             {
@@ -92,12 +82,14 @@ namespace ImageFilters
       
             Zxy = window[((windowSize * windowSize) - 1) / 2];
 
-
             if (sort)
             {
                 QUICK_SORT(window, 0, ((windowSize * windowSize) - 1));
             }
-            else CountingSort(window);
+            else
+            {
+                CountingSort(window);
+            }
 
             Zmedian = window[((windowSize * windowSize) - 1) / 2];
             Zmin = window[0];
@@ -122,24 +114,21 @@ namespace ImageFilters
             else
             {
                 newwindowsize += 2;
-
                 if (newwindowsize <= ws)
                 {
                     NewPixel(window, ws, sort);
                 }
                 else
+                {
                     newpixelval = Zmedian;
-
+                }
             }
-       
             return newpixelval;
         }
-
 
         static byte[,] Padding(byte[,] img, int windowSize)
         {
             int pad = windowSize / 2;
-
             byte[,] arrayZeroPad = new byte[img.GetLength(0) + (pad * 2), img.GetLength(1) + (pad * 2)];
 
             for (int i = 0; i < arrayZeroPad.GetLength(0); i++)
@@ -155,19 +144,17 @@ namespace ImageFilters
             return arrayZeroPad;
         }
 
-
         public static byte[,] AdaptivemedianFilter(byte[,] img, int windowSize,  bool Sort)
         {
             byte[] window = new byte[windowSize * windowSize];
             byte[,] imgPad = Padding(img, windowSize);
             int imgWidth = imgPad.GetLength(0), imgLength = imgPad.GetLength(1);
            
-
             for (int i = 0; (i + windowSize - 1) < imgWidth; i++)
             {
                 for (int j = 0; (j + windowSize - 1) < imgLength; j++)
                 {
-                    OneDWindow(imgPad, window, i, j, windowSize);
+                    getWindow(imgPad, window, i, j, windowSize);
                     int newPixel = NewPixel(window,windowSize, Sort);
                     img[i, j] = (byte)newPixel;
                 }

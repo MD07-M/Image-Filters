@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace ImageFilters
@@ -14,7 +13,9 @@ namespace ImageFilters
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Form1 form = new Form1();
+            form.Size = new System.Drawing.Size(935, 550);
+            Application.Run(form);
         }
     }
 }

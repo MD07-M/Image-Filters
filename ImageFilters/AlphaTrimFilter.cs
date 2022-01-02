@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace ImageFilters
 {
@@ -107,7 +103,6 @@ namespace ImageFilters
         static byte[,] padding(byte[,] img, int windowSize)
         {
             int pad = windowSize / 2;
-
             byte[,] arrayZeroPad = new byte[img.GetLength(0) + (pad * 2), img.GetLength(1) + (pad * 2)];
 
             for (int i = 0; i < arrayZeroPad.GetLength(0); i++)
