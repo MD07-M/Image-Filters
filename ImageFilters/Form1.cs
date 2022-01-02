@@ -30,7 +30,8 @@ namespace ImageFilters
 
         private void btnZGraph_Click(object sender, EventArgs e)
         {
-            int t = Convert.ToInt32(T_Value.Text);
+            int t = 1;
+            try{ t = Convert.ToInt32(T_Value.Text); } catch(Exception exx) {  }
             int maxWindowSize = Convert.ToInt32(Max_Graph_Ws.Text);
             int N = maxWindowSize / 2;
             double[] x_values = new double[N];
@@ -38,7 +39,7 @@ namespace ImageFilters
             double[] y_values_2ndAlgo = new double[N];
             double time1, time2;
 
-            if (Filter_Type.SelectedItem.ToString() == "Alpha-Trim Filter")
+            if (Filter_Type.SelectedIndex == 0)
             {
                 for (int windowSize = 3, i = 0; windowSize <= maxWindowSize; windowSize += 2, i++)
                 {
@@ -60,38 +61,40 @@ namespace ImageFilters
                 ZGF.add_curve("K-sort", x_values, y_values_2ndAlgo, Color.Blue);
                 ZGF.Show();
             }
-            /*else
+            else if(Filter_Type.SelectedIndex == 1)
             {
+       
                 for (int windowSize = 3, i = 0; windowSize <= maxWindowSize; windowSize += 2, i++)
                 {
                     x_values[i] = windowSize;
-
+                    
                     time1 = System.Environment.TickCount;
-                    AdaptiveMedFilter.adaptiveMedFilter(ImageMatrix, windowSize, t, 1);
+                    AdaptiveMedianFilter.AdaptivemedianFilter(ImageMatrix, windowSize, false);
                     time2 = System.Environment.TickCount;
                     y_values_1stAlgo[i] = (time2 - time1) / 1000;
-
                     time1 = System.Environment.TickCount;
-                    AdaptiveMedFilter.adaptiveMedFilter(ImageMatrix, windowSize, t, 2);
+                    AdaptiveMedianFilter.AdaptivemedianFilter(ImageMatrix, windowSize, true);
                     time2 = System.Environment.TickCount;
                     y_values_2ndAlgo[i] = (time2 - time1) / 1000;
                 }
                 //Create a graph and add two curves to it
-                ZGraphForm ZGF = new ZGraphForm("Sample Graph", "N", "f(N)");
-                ZGF.add_curve("f(N) = N", x_values, y_values_1stAlgo,Color.Red);
-                ZGF.add_curve("f(N) = N Log(N)", x_values, y_values_2ndAlgo, Color.Blue);
+                ZGraphForm ZGF = new ZGraphForm("Adaptive Median Filter", "Window size", "Execution time");
+                ZGF.add_curve("Counting Sort ", x_values, y_values_1stAlgo, Color.Red);
+                ZGF.add_curve("Quick Sort ", x_values, y_values_2ndAlgo, Color.Blue);
                 ZGF.Show();
-            }*/
+            }
         }
 
         private void submit_btn_Click(object sender, EventArgs e)
         {
-            int t = Convert.ToInt32(T_Value.Text);
-            int windowSize = Convert.ToInt32(Ws.Text);
             byte[,] newImageMatrix = { };
-            if (Filter_Type.SelectedItem.ToString() == "Alpha-Trim Filter")
+
+            if (Filter_Type.SelectedIndex == 0)
             {
-                if (Sorting_Algo.SelectedItem.ToString() == "Counting sort")
+                int t = Convert.ToInt32(T_Value.Text);
+                int windowSize = Convert.ToInt32(Ws.Text);
+            
+                if (Sorting_Algo.SelectedIndex == 0)
                 {
                     newImageMatrix = AlphaTrimFilter.alphaTrimFilter(ImageMatrix, windowSize, t, 1);
                 }
@@ -100,18 +103,16 @@ namespace ImageFilters
                     newImageMatrix = AlphaTrimFilter.alphaTrimFilter(ImageMatrix, windowSize, t, 2);
                 }
             }
-            /*else
+            else if (Filter_Type.SelectedIndex == 1)
             {
-                if (Sorting_Algo.SelectedItem.ToString() == "Counting sort")
-                {
-                    newImageMatrix = AdaptiveMedFilter.adaptiveMedFilter(ImageMatrix, windowSize, t, 1);
-                }
-                else
-                {
-                    newImageMatrix = AdaptiveMedFilter.adaptiveMedFilter(ImageMatrix, windowSize, t, 2);
-                }
-            }*/
+                int windowSize = Convert.ToInt32(Ws.Text);
+
+                newImageMatrix = AdaptiveMedianFilter.AdaptivemedianFilter(ImageMatrix, windowSize, Convert.ToBoolean(Sorting_Algo.SelectedIndex));
+
+            }
+
             ImageOperations.DisplayImage(newImageMatrix, pictureBox2);
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -124,12 +125,24 @@ namespace ImageFilters
         {
             Sorting_Algo.Items.Clear();
             Sorting_Algo.ResetText();
+
+
             Sorting_Algo.Items.Add("Counting sort");
 
-            if (Filter_Type.SelectedItem.ToString() == "Alpha-Trim Filter")
+            if (Filter_Type.SelectedIndex == 0)
+            {
+                label4.Visible = true;
+                T_Value.Visible = true;
                 Sorting_Algo.Items.Add("Select Kth smallest / largest element");
+            }
             else
+            {
                 Sorting_Algo.Items.Add("Quick sort");
+                label4.Visible = false;
+                T_Value.Visible = false;
+            }
+
+
         }
 
     }
